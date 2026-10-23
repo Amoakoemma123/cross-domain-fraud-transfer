@@ -1,0 +1,128 @@
+{
+  "contrastive": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.197,
+      "median_gain": 0.0716,
+      "wins": 12,
+      "W": 78.0,
+      "p_one_sided": 0.00024
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.1993,
+      "median_gain": 0.0279,
+      "wins": 11,
+      "W": 77.0,
+      "p_one_sided": 0.00049
+    }
+  },
+  "coral_deep": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.0962,
+      "median_gain": 0.0175,
+      "wins": 8,
+      "W": 36.0,
+      "p_one_sided": 0.00391
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.0684,
+      "median_gain": 0.0038,
+      "wins": 8,
+      "W": 64.0,
+      "p_one_sided": 0.02612
+    }
+  },
+  "coral_rf": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.0077,
+      "median_gain": 0.0,
+      "wins": 3,
+      "W": 6.0,
+      "p_one_sided": 0.125
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.0115,
+      "median_gain": 0.001,
+      "wins": 6,
+      "W": 52.0,
+      "p_one_sided": 0.16968
+    }
+  },
+  "dann": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.1056,
+      "median_gain": 0.0109,
+      "wins": 9,
+      "W": 45.0,
+      "p_one_sided": 0.00195
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.0685,
+      "median_gain": -0.0002,
+      "wins": 5,
+      "W": 47.0,
+      "p_one_sided": 0.28467
+    }
+  },
+  "finetune": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.1429,
+      "median_gain": 0.0633,
+      "wins": 12,
+      "W": 78.0,
+      "p_one_sided": 0.00024
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.1487,
+      "median_gain": 0.0241,
+      "wins": 11,
+      "W": 77.0,
+      "p_one_sided": 0.00049
+    }
+  },
+  "mmd": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.0508,
+      "median_gain": 0.0127,
+      "wins": 8,
+      "W": 36.0,
+      "p_one_sided": 0.00391
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.0733,
+      "median_gain": 0.0012,
+      "wins": 9,
+      "W": 60.0,
+      "p_one_sided": 0.05493
+    }
+  },
+  "tradaboost": {
+    "f1": {
+      "n": 12,
+      "mean_gain": 0.1786,
+      "median_gain": 0.068,
+      "wins": 12,
+      "W": 78.0,
+      "p_one_sided": 0.00024
+    },
+    "pr_auc": {
+      "n": 12,
+      "mean_gain": 0.1603,
+      "median_gain": 0.0053,
+      "wins": 7,
+      "W": 58.0,
+      "p_one_sided": 0.07568
+    }
+  }
+}

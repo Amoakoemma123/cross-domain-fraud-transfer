@@ -1,0 +1,33 @@
+{
+  "dataset": "BankSim",
+  "n_rows": 594643,
+  "n_cols": 5,
+  "n_fraud": 7200,
+  "n_legit": 587443,
+  "fraud_rate": 0.012108,
+  "imbalance_ratio": 81.59,
+  "n_numerical": 2,
+  "n_categorical": 3,
+  "categorical_cols": [
+    "age",
+    "gender",
+    "category"
+  ],
+  "cardinality": {
+    "age": 8,
+    "gender": 4,
+    "category": 15
+  },
+  "cols_with_missing": 0,
+  "max_missing_rate": 0.0,
+  "high_missing_cols": [],
+  "amount_stats": {
+    "col": "amount",
+    "mean": 37.8901,
+    "median": 26.9,
+    "std": 111.4028,
+    "min": 0.0,
+    "max": 8329.96,
+    "p99": 236.7558
+  }
+}

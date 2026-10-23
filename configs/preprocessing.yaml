@@ -1,0 +1,45 @@
+general:
+  test_size: 0.20
+  val_size: 0.10
+  random_seed: 42
+  stratify: true
+
+missing_values:
+  numerical_strategy: "median"
+  categorical_strategy: "most_frequent"
+  drop_threshold: 0.50        # drop column if >50% missing
+
+encoding:
+  method: "onehot"            # onehot | label | target
+  handle_unknown: "ignore"
+  max_categories: 50          # collapse rare categories above this count
+
+scaling:
+  method: "standard"          # standard | minmax | robust
+  # robust scaler is preferred for fraud data due to outliers
+
+feature_engineering:
+  amount_log: true            # log1p(amount) — reduces skew
+  velocity_features: false    # requires temporal ordering; enable per dataset
+  balance_diff: true          # newbalance - oldbalance for PaySim
+
+imbalance:
+  strategies:
+    - none
+    - class_weight
+    - undersample
+    - smote
+    - adasyn
+  default: "class_weight"
+  smote_k_neighbors: 5
+  smote_max_per_class: 50000  # cap synthetic samples to avoid explosion
+  undersample_ratio: 0.10     # majority:minority ratio for undersampling
+
+harmonization:
+  # Semantic features present (or derivable) in all datasets
+  common_features:
+    - amount
+    - amount_log
+    - hour_of_day        # derived from temporal field where available
+    - transaction_type   # categorical; dataset-specific encoding
+  min_common_features: 2

@@ -1,0 +1,58 @@
+[
+  {
+    "src": "ulb",
+    "tgt": "ieee_cis",
+    "lambda_da": 0.1,
+    "f1": 0.0083,
+    "pr_auc": 0.0392,
+    "elapsed_s": 125.6
+  },
+  {
+    "src": "ulb",
+    "tgt": "ieee_cis",
+    "lambda_da": 0.5,
+    "f1": 0.0066,
+    "pr_auc": 0.0384,
+    "elapsed_s": 117.8
+  },
+  {
+    "src": "ulb",
+    "tgt": "ieee_cis",
+    "lambda_da": 2.0,
+    "f1": 0.0093,
+    "pr_auc": 0.039,
+    "elapsed_s": 118.1
+  },
+  {
+    "src": "ulb",
+    "tgt": "paysim",
+    "lambda_da": 0.1,
+    "f1": 0.0701,
+    "pr_auc": 0.0148,
+    "elapsed_s": 145.2
+  },
+  {
+    "src": "ulb",
+    "tgt": "paysim",
+    "lambda_da": 0.5,
+    "f1": 0.063,
+    "pr_auc": 0.0146,
+    "elapsed_s": 143.4
+  },
+  {
+    "src": "ulb",
+    "tgt": "paysim",
+    "lambda_da": 2.0,
+    "f1": 0.0542,
+    "pr_auc": 0.0146,
+    "elapsed_s": 142.5
+  },
+  {
+    "src": "ulb",
+    "tgt": "banksim",
+    "lambda_da": 0.1,
+    "f1": 0.1968,
+    "pr_auc": 0.626,
+    "elapsed_s": 144.2
+  }
+]

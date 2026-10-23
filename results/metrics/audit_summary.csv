@@ -1,0 +1,5 @@
+Dataset,Rows,Features,Fraud,Fraud %,Imbalance 1:N,Missing cols,Max missing %
+ULB Credit Card,284807,30,492,0.1727,577.88,0,0.0
+IEEE-CIS,590540,432,20663,3.4990,27.58,414,99.2
+PaySim,6362620,7,8213,0.1291,773.7,0,0.0
+BankSim,594643,5,7200,1.2108,81.59,0,0.0

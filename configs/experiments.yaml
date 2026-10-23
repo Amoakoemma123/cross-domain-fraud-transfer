@@ -1,0 +1,134 @@
+global:
+  random_seeds: [42, 123, 456]
+  primary_seed: 42
+  output_dir: "results"
+  mlflow_uri: "results/mlruns"
+  log_level: "INFO"
+
+# ── Baseline ────────────────────────────────────────────────────────────────
+baseline:
+  datasets: [ulb, ieee_cis, paysim, banksim]
+  models: [logistic_regression, random_forest, xgboost, lightgbm, mlp, autoencoder]
+  cv_folds: 5
+  imbalance_strategy: "class_weight"
+
+# ── Cross-domain (12 directions) ────────────────────────────────────────────
+cross_domain:
+  pairs:
+    - [ulb,     ieee_cis]
+    - [ulb,     paysim]
+    - [ulb,     banksim]
+    - [ieee_cis, ulb]
+    - [ieee_cis, paysim]
+    - [ieee_cis, banksim]
+    - [paysim,  ulb]
+    - [paysim,  ieee_cis]
+    - [paysim,  banksim]
+    - [banksim, ulb]
+    - [banksim, ieee_cis]
+    - [banksim, paysim]
+  models: [random_forest, xgboost, mlp]
+  zero_shot: true             # evaluate with NO target-domain labels first
+
+# ── Target-domain adaptation ─────────────────────────────────────────────────
+adaptation:
+  target_label_fractions: [0.00, 0.01, 0.05, 0.10, 0.20]
+  transfer_methods: [coral, mmd, dann, contrastive]
+  primary_pairs:
+    - [ulb,     ieee_cis]
+    - [ieee_cis, paysim]
+    - [paysim,  ulb]
+
+# ── Imbalance ablation ───────────────────────────────────────────────────────
+imbalance:
+  datasets: [ulb, ieee_cis, paysim]
+  strategies: [none, class_weight, undersample, smote, adasyn]
+  model: xgboost
+
+# ── Ablation ─────────────────────────────────────────────────────────────────
+ablation:
+  conditions:
+    A: {feature_alignment: true,  transfer: true,  class_weight: true}
+    B: {feature_alignment: false, transfer: true,  class_weight: true}
+    C: {feature_alignment: true,  transfer: false, class_weight: true}
+    D: {feature_alignment: true,  transfer: true,  class_weight: false}
+  dataset_pair: [ieee_cis, paysim]
+
+# ── Model hyperparameters ────────────────────────────────────────────────────
+models:
+  logistic_regression:
+    C: 1.0
+    max_iter: 1000
+    solver: "lbfgs"
+    class_weight: "balanced"
+
+  random_forest:
+    n_estimators: 300
+    max_depth: null
+    min_samples_leaf: 2
+    class_weight: "balanced"
+    n_jobs: -1
+
+  xgboost:
+    n_estimators: 500
+    max_depth: 6
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    eval_metric: "aucpr"
+    early_stopping_rounds: 30
+
+  lightgbm:
+    n_estimators: 500
+    max_depth: -1
+    learning_rate: 0.05
+    num_leaves: 63
+    class_weight: "balanced"
+    early_stopping_round: 30
+
+  mlp:
+    hidden_dims: [256, 128, 64]
+    dropout: 0.3
+    batch_norm: true
+    lr: 0.001
+    batch_size: 512
+    epochs: 50
+    patience: 10
+
+  autoencoder:
+    encoder_dims: [128, 64, 32]
+    latent_dim: 16
+    lr: 0.001
+    batch_size: 512
+    epochs: 50
+    reconstruction_weight: 1.0
+
+  dann:
+    encoder_dims: [256, 128]
+    latent_dim: 64
+    lr: 0.001
+    lambda_domain: 1.0
+    epochs: 50
+    patience: 10
+
+  coral:
+    lambda_coral: 1.0
+
+  mmd:
+    kernel: "rbf"
+    lambda_mmd: 1.0
+
+  contrastive:
+    encoder_dims: [256, 128]
+    latent_dim: 64
+    temperature: 0.07
+    lr: 0.001
+    epochs: 50
+
+# ── Evaluation ───────────────────────────────────────────────────────────────
+evaluation:
+  primary_metrics: [f1, pr_auc, precision, recall]
+  secondary_metrics: [roc_auc, mcc, brier_score]
+  confidence_interval: 0.95
+  bootstrap_iterations: 1000
+  statistical_test: "wilcoxon"   # wilcoxon | friedman

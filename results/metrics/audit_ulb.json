@@ -1,0 +1,25 @@
+{
+  "dataset": "ULB Credit Card",
+  "n_rows": 284807,
+  "n_cols": 30,
+  "n_fraud": 492,
+  "n_legit": 284315,
+  "fraud_rate": 0.001727,
+  "imbalance_ratio": 577.88,
+  "n_numerical": 30,
+  "n_categorical": 0,
+  "categorical_cols": [],
+  "cardinality": {},
+  "cols_with_missing": 0,
+  "max_missing_rate": 0.0,
+  "high_missing_cols": [],
+  "amount_stats": {
+    "col": "Amount",
+    "mean": 88.3496,
+    "median": 22.0,
+    "std": 250.1201,
+    "min": 0.0,
+    "max": 25691.16,
+    "p99": 1017.97
+  }
+}

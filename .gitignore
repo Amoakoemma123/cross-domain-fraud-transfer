@@ -1,0 +1,43 @@
+# Virtual environment
+fraud_env/
+venv/
+.venv/
+ids_env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Raw datasets (too large for GitHub — see README for download instructions)
+dataset/raw/
+dataset/processed/
+
+# Model checkpoints (large binary files)
+experiments/*/models/
+experiments/*/checkpoints/
+*.joblib
+*.pkl
+*.pt
+*.pth
+*.h5
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log

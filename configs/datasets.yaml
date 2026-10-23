@@ -1,0 +1,67 @@
+ulb:
+  name: "ULB Credit Card Fraud"
+  domain: "credit_card"
+  raw_path: "dataset/raw/ulb/creditcard.csv"
+  label_col: "Class"
+  label_positive: 1
+  drop_cols: []
+  feature_types:
+    numerical: ["Time", "Amount", "V1", "V2", "V3", "V4", "V5", "V6", "V7",
+                "V8", "V9", "V10", "V11", "V12", "V13", "V14", "V15", "V16",
+                "V17", "V18", "V19", "V20", "V21", "V22", "V23", "V24",
+                "V25", "V26", "V27", "V28"]
+    categorical: []
+    temporal: ["Time"]
+  n_rows: 284807
+  fraud_count: 492
+  fraud_rate: 0.00172
+  notes: "PCA-anonymized features V1-V28; Time is seconds elapsed."
+
+ieee_cis:
+  name: "IEEE-CIS Fraud Detection"
+  domain: "ecommerce"
+  raw_path: "dataset/raw/ieee_cis/"
+  transaction_file: "train_transaction.csv"
+  identity_file: "train_identity.csv"
+  label_col: "isFraud"
+  label_positive: 1
+  id_col: "TransactionID"
+  drop_cols: []
+  feature_types:
+    numerical: []   # populated dynamically at load time
+    categorical: [] # populated dynamically at load time
+    temporal: ["TransactionDT"]
+  n_rows: 590540
+  fraud_rate: 0.035
+  notes: "Transaction + identity join on TransactionID. Many sparse categorical cols."
+
+paysim:
+  name: "PaySim Mobile Money"
+  domain: "mobile_money"
+  raw_path: "dataset/raw/paysim/PS_20174392719_1491204439457_log.csv"
+  label_col: "isFraud"
+  label_positive: 1
+  drop_cols: ["isFlaggedFraud", "nameOrig", "nameDest"]
+  feature_types:
+    numerical: ["amount", "oldbalanceOrg", "newbalanceOrig",
+                "oldbalanceDest", "newbalanceDest", "step"]
+    categorical: ["type"]
+    temporal: ["step"]
+  n_rows: 6362620
+  fraud_rate: 0.00129
+  notes: "Synthetic mobile money. Only TRANSFER and CASH_OUT types contain fraud."
+
+banksim:
+  name: "BankSim"
+  domain: "banking"
+  raw_path: "dataset/raw/banksim/bs140513_032310.csv"
+  label_col: "fraud"
+  label_positive: 1
+  drop_cols: ["customer", "merchant", "zipcodeOri", "zipMerchant"]
+  feature_types:
+    numerical: ["amount"]
+    categorical: ["age", "gender", "category"]
+    temporal: ["step"]
+  n_rows: 594643
+  fraud_rate: 0.012
+  notes: "Validation dataset only. Agent-based synthetic banking data."

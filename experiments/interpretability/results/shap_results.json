@@ -1,0 +1,382 @@
+[
+  {
+    "src": "paysim",
+    "tgt": "banksim",
+    "method": "contrastive",
+    "frac": "001pct",
+    "top_features": [
+      {
+        "feature": "amount",
+        "mean_abs_shap": 0.0012350488665211338
+      },
+      {
+        "feature": "hour_of_day",
+        "mean_abs_shap": 0.00014398031429817707
+      },
+      {
+        "feature": "step",
+        "mean_abs_shap": 9.838547157398548e-05
+      },
+      {
+        "feature": "amount_log",
+        "mean_abs_shap": 5.120207149965503e-05
+      },
+      {
+        "feature": "type_DEBIT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_PAYMENT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_TRANSFER",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "balance_diff_dest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_CASH_IN",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_CASH_OUT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "balance_diff_orig",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "oldbalanceDest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "newbalanceDest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "oldbalanceOrg",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "newbalanceOrig",
+        "mean_abs_shap": 0.0
+      }
+    ]
+  },
+  {
+    "src": "ieee_cis",
+    "tgt": "ulb",
+    "method": "contrastive",
+    "frac": "010pct",
+    "top_features": [
+      {
+        "feature": "amount_log",
+        "mean_abs_shap": 0.0005057738147815561
+      },
+      {
+        "feature": "V10",
+        "mean_abs_shap": 0.0003588395959494429
+      },
+      {
+        "feature": "V6",
+        "mean_abs_shap": 0.0003356814410422494
+      },
+      {
+        "feature": "V14",
+        "mean_abs_shap": 0.0003034120784672498
+      },
+      {
+        "feature": "amount",
+        "mean_abs_shap": 0.00022107539720836328
+      },
+      {
+        "feature": "V7",
+        "mean_abs_shap": 0.0002193143991395738
+      },
+      {
+        "feature": "V15",
+        "mean_abs_shap": 0.00019721707422433517
+      },
+      {
+        "feature": "time_elapsed",
+        "mean_abs_shap": 0.00019588744826276602
+      },
+      {
+        "feature": "V17",
+        "mean_abs_shap": 0.00014227731791458575
+      },
+      {
+        "feature": "V12",
+        "mean_abs_shap": 0.0001378872095728711
+      },
+      {
+        "feature": "V2",
+        "mean_abs_shap": 0.00013404107736572158
+      },
+      {
+        "feature": "V28",
+        "mean_abs_shap": 0.000102338535456187
+      },
+      {
+        "feature": "V11",
+        "mean_abs_shap": 9.478779330934592e-05
+      },
+      {
+        "feature": "V23",
+        "mean_abs_shap": 6.69236566667746e-05
+      },
+      {
+        "feature": "V9",
+        "mean_abs_shap": 6.643455728465772e-05
+      },
+      {
+        "feature": "hour_of_day",
+        "mean_abs_shap": 6.643319443933144e-05
+      },
+      {
+        "feature": "V24",
+        "mean_abs_shap": 6.410225029918634e-05
+      },
+      {
+        "feature": "V8",
+        "mean_abs_shap": 5.628970516192461e-05
+      },
+      {
+        "feature": "V5",
+        "mean_abs_shap": 5.593258433278053e-05
+      },
+      {
+        "feature": "V20",
+        "mean_abs_shap": 4.884372732867836e-05
+      }
+    ]
+  },
+  {
+    "src": "paysim",
+    "tgt": "banksim",
+    "method": "finetune",
+    "frac": "010pct",
+    "top_features": [
+      {
+        "feature": "amount",
+        "mean_abs_shap": 0.06729666262175489
+      },
+      {
+        "feature": "step",
+        "mean_abs_shap": 0.01900773126480744
+      },
+      {
+        "feature": "amount_log",
+        "mean_abs_shap": 0.012699261761416836
+      },
+      {
+        "feature": "hour_of_day",
+        "mean_abs_shap": 0.010239792386031697
+      },
+      {
+        "feature": "type_DEBIT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_PAYMENT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_TRANSFER",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "balance_diff_dest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_CASH_IN",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_CASH_OUT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "balance_diff_orig",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "oldbalanceDest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "newbalanceDest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "oldbalanceOrg",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "newbalanceOrig",
+        "mean_abs_shap": 0.0
+      }
+    ]
+  },
+  {
+    "src": "paysim",
+    "tgt": "banksim",
+    "method": "dann",
+    "frac": "000pct",
+    "top_features": [
+      {
+        "feature": "amount_log",
+        "mean_abs_shap": 0.03138863121588398
+      },
+      {
+        "feature": "hour_of_day",
+        "mean_abs_shap": 0.019595630984564193
+      },
+      {
+        "feature": "step",
+        "mean_abs_shap": 0.008016769085022838
+      },
+      {
+        "feature": "amount",
+        "mean_abs_shap": 0.007854571714861794
+      },
+      {
+        "feature": "type_DEBIT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_PAYMENT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_TRANSFER",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "balance_diff_dest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_CASH_IN",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "type_CASH_OUT",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "balance_diff_orig",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "oldbalanceDest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "newbalanceDest",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "oldbalanceOrg",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "newbalanceOrig",
+        "mean_abs_shap": 0.0
+      }
+    ]
+  },
+  {
+    "src": "ieee_cis",
+    "tgt": "banksim",
+    "method": "contrastive",
+    "frac": "001pct",
+    "top_features": [
+      {
+        "feature": "amount_log",
+        "mean_abs_shap": 0.0006950754151990013
+      },
+      {
+        "feature": "amount",
+        "mean_abs_shap": 0.00028469250903775294
+      },
+      {
+        "feature": "hour_of_day",
+        "mean_abs_shap": 0.00014841020520155553
+      },
+      {
+        "feature": "P_emaildomain_yahoo.com",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "C8",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "C9",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "M6_F",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "V2",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "V1",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D15",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D11",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D10",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D4",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D3",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D2",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "D1",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "C14",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "C13",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "C12",
+        "mean_abs_shap": 0.0
+      },
+      {
+        "feature": "C11",
+        "mean_abs_shap": 0.0
+      }
+    ]
+  }
+]

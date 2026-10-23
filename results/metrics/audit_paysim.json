@@ -1,0 +1,29 @@
+{
+  "dataset": "PaySim",
+  "n_rows": 6362620,
+  "n_cols": 7,
+  "n_fraud": 8213,
+  "n_legit": 6354407,
+  "fraud_rate": 0.001291,
+  "imbalance_ratio": 773.7,
+  "n_numerical": 6,
+  "n_categorical": 1,
+  "categorical_cols": [
+    "type"
+  ],
+  "cardinality": {
+    "type": 5
+  },
+  "cols_with_missing": 0,
+  "max_missing_rate": 0.0,
+  "high_missing_cols": [],
+  "amount_stats": {
+    "col": "amount",
+    "mean": 179861.9035,
+    "median": 74871.94,
+    "std": 603858.2315,
+    "min": 0.0,
+    "max": 92445516.64,
+    "p99": 1615979.4716
+  }
+}

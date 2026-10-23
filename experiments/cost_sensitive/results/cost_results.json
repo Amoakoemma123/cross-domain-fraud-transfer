@@ -1,0 +1,218 @@
+[
+  {
+    "scenario": "conservative",
+    "method": "no_adapt",
+    "best_frac": 0.0,
+    "mean_savings_pct": 0.0,
+    "min_savings_pct": 0.0,
+    "max_savings_pct": 0.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "coral_rf",
+    "best_frac": 0.0,
+    "mean_savings_pct": -43.4,
+    "min_savings_pct": -420.4,
+    "max_savings_pct": 0.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "mmd",
+    "best_frac": 0.0,
+    "mean_savings_pct": -485.3,
+    "min_savings_pct": -3937.7,
+    "max_savings_pct": 20.3,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "coral_deep",
+    "best_frac": 0.0,
+    "mean_savings_pct": -399.0,
+    "min_savings_pct": -3230.0,
+    "max_savings_pct": 50.7,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "dann",
+    "best_frac": 0.0,
+    "mean_savings_pct": -1049.9,
+    "min_savings_pct": -4636.1,
+    "max_savings_pct": 51.5,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "tradaboost",
+    "best_frac": 0.01,
+    "mean_savings_pct": -9500.7,
+    "min_savings_pct": -38575.7,
+    "max_savings_pct": 49.3,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "finetune",
+    "best_frac": 0.1,
+    "mean_savings_pct": -3755.3,
+    "min_savings_pct": -15114.1,
+    "max_savings_pct": 44.1,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "conservative",
+    "method": "contrastive",
+    "best_frac": 0.01,
+    "mean_savings_pct": -3826.2,
+    "min_savings_pct": -39464.3,
+    "max_savings_pct": 57.6,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "no_adapt",
+    "best_frac": 0.0,
+    "mean_savings_pct": 0.0,
+    "min_savings_pct": 0.0,
+    "max_savings_pct": 0.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "coral_rf",
+    "best_frac": 0.0,
+    "mean_savings_pct": -21.2,
+    "min_savings_pct": -209.7,
+    "max_savings_pct": 0.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "mmd",
+    "best_frac": 0.0,
+    "mean_savings_pct": -238.5,
+    "min_savings_pct": -1961.8,
+    "max_savings_pct": 20.4,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "coral_deep",
+    "best_frac": 0.0,
+    "mean_savings_pct": -193.3,
+    "min_savings_pct": -1608.4,
+    "max_savings_pct": 52.4,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "dann",
+    "best_frac": 0.0,
+    "mean_savings_pct": -513.9,
+    "min_savings_pct": -2310.0,
+    "max_savings_pct": 66.1,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "tradaboost",
+    "best_frac": 0.01,
+    "mean_savings_pct": -4716.3,
+    "min_savings_pct": -19237.8,
+    "max_savings_pct": 51.3,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "finetune",
+    "best_frac": 0.1,
+    "mean_savings_pct": -1846.1,
+    "min_savings_pct": -7531.3,
+    "max_savings_pct": 62.7,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "moderate",
+    "method": "contrastive",
+    "best_frac": 0.01,
+    "mean_savings_pct": -1884.9,
+    "min_savings_pct": -19686.2,
+    "max_savings_pct": 66.5,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "no_adapt",
+    "best_frac": 0.0,
+    "mean_savings_pct": 0.0,
+    "min_savings_pct": 0.0,
+    "max_savings_pct": 0.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "coral_rf",
+    "best_frac": 0.0,
+    "mean_savings_pct": -4.5,
+    "min_savings_pct": -51.7,
+    "max_savings_pct": 0.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "mmd",
+    "best_frac": 0.0,
+    "mean_savings_pct": -53.3,
+    "min_savings_pct": -479.8,
+    "max_savings_pct": 20.5,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "coral_deep",
+    "best_frac": 0.0,
+    "mean_savings_pct": -39.0,
+    "min_savings_pct": -392.3,
+    "max_savings_pct": 53.6,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "dann",
+    "best_frac": 0.0,
+    "mean_savings_pct": -112.0,
+    "min_savings_pct": -565.4,
+    "max_savings_pct": 77.0,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "tradaboost",
+    "best_frac": 0.01,
+    "mean_savings_pct": -1128.0,
+    "min_savings_pct": -4734.5,
+    "max_savings_pct": 73.4,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "finetune",
+    "best_frac": 0.1,
+    "mean_savings_pct": -414.2,
+    "min_savings_pct": -1844.2,
+    "max_savings_pct": 78.2,
+    "n_pairs": 12
+  },
+  {
+    "scenario": "aggressive",
+    "method": "contrastive",
+    "best_frac": 0.01,
+    "mean_savings_pct": -428.9,
+    "min_savings_pct": -4852.6,
+    "max_savings_pct": 75.7,
+    "n_pairs": 12
+  }
+]
