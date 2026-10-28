@@ -114,6 +114,8 @@ class TransferAdapter:
         y_tgt_lab: np.ndarray = None,
         X_val: np.ndarray = None,            # target val for early stopping
         y_val: np.ndarray = None,
+        X_src_val: np.ndarray = None,        # source val (finetune phase 1)
+        y_src_val: np.ndarray = None,
     ) -> "TransferAdapter":
         torch.manual_seed(self.seed)
         np.random.seed(self.seed)
@@ -129,7 +131,8 @@ class TransferAdapter:
         elif self.method == "dann":
             self._fit_dann(X_src, y_src, X_tgt_unlab, X_val, y_val)
         elif self.method == "finetune":
-            self._fit_finetune(X_src, y_src, X_tgt_lab, y_tgt_lab, X_val, y_val)
+            self._fit_finetune(X_src, y_src, X_tgt_lab, y_tgt_lab, X_val, y_val,
+                               X_src_val, y_src_val)
         elif self.method == "contrastive":
             self._fit_contrastive(X_src, y_src, X_tgt_unlab, X_tgt_lab, y_tgt_lab, X_val, y_val)
         elif self.method == "tradaboost":
@@ -356,7 +359,8 @@ class TransferAdapter:
 
     # ── Fine-tune ─────────────────────────────────────────────────────────────
 
-    def _fit_finetune(self, X_src, y_src, X_tgt_lab, y_tgt_lab, X_val, y_val):
+    def _fit_finetune(self, X_src, y_src, X_tgt_lab, y_tgt_lab, X_val, y_val,
+                      X_src_val=None, y_src_val=None):
         # Phase 1: train on source
         model = FraudEncoder(self.input_dim, self.hidden_dims, self.repr_dim, self.dropout)
         model.to(self.device)
@@ -365,7 +369,9 @@ class TransferAdapter:
         pw = torch.tensor([n_neg / max(n_pos, 1)], device=self.device)
         cls_fn = nn.BCEWithLogitsLoss(pos_weight=pw)
         opt = torch.optim.Adam(model.parameters(), lr=self.lr)
-        self._train_classifier(model, opt, cls_fn, X_src, y_src, X_val, y_val, self.epochs)
+        # Phase 1 early-stops on source val when given (v2), else on X_val (v1)
+        X_es, y_es = (X_src_val, y_src_val) if X_src_val is not None else (X_val, y_val)
+        self._train_classifier(model, opt, cls_fn, X_src, y_src, X_es, y_es, self.epochs)
 
         # Phase 2: fine-tune on labeled target (smaller LR)
         if X_tgt_lab is not None and len(X_tgt_lab) > 0:
@@ -519,7 +525,9 @@ class TransferAdapter:
 
     def _make_loader(self, X, y, shuffle=True) -> DataLoader:
         ds = TensorDataset(torch.FloatTensor(X), torch.FloatTensor(y))
-        return DataLoader(ds, batch_size=self.batch_size, shuffle=shuffle, drop_last=False)
+        # a final batch of one row breaks BatchNorm in train mode
+        drop_last = len(X) % self.batch_size == 1
+        return DataLoader(ds, batch_size=self.batch_size, shuffle=shuffle, drop_last=drop_last)
 
     def _make_unlabeled_loader(self, X, shuffle=True) -> DataLoader:
         ds = TensorDataset(torch.FloatTensor(X))

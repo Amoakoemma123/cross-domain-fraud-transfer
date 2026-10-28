@@ -41,3 +41,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# v2 per-run score arrays (regenerable)
+experiments/v2/scores/
+experiments/v2/*.log

@@ -13,6 +13,10 @@ zero_fill    Use the full source feature space.  Target columns that are
              absent from source features are dropped; source features absent
              in the target are filled with 0.
 
+union        Source features followed by target-only features.  Each domain
+             is zero-filled on the columns it lacks, so a model that sees
+             labelled target rows can still use the target's own features.
+
 Canonical rename map
 ────────────────────
 Some preprocessors produce dataset-specific names (e.g. ULB's Amount_log vs
@@ -52,7 +56,7 @@ class FeatureAligner:
 
     Parameters
     ----------
-    strategy : {'semantic', 'intersection', 'zero_fill'}
+    strategy : {'semantic', 'intersection', 'zero_fill', 'union'}
     source_names : list[str]   Preprocessor output names for source dataset.
     target_names : list[str]   Preprocessor output names for target dataset.
     """
@@ -63,7 +67,7 @@ class FeatureAligner:
         source_names: list[str],
         target_names: list[str],
     ):
-        if strategy not in ("semantic", "intersection", "zero_fill"):
+        if strategy not in ("semantic", "intersection", "zero_fill", "union"):
             raise ValueError(f"Unknown strategy: {strategy!r}")
         self.strategy = strategy
 
@@ -115,6 +119,10 @@ class FeatureAligner:
             common = src_set & tgt_set
             # Preserve source ordering for reproducibility
             return [n for n in self._src_names if n in common]
+
+        if self.strategy == "union":
+            src_set = set(self._src_names)
+            return list(self._src_names) + [n for n in self._tgt_names if n not in src_set]
 
         # zero_fill: full source space
         return list(self._src_names)
