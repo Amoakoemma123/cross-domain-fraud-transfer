@@ -38,10 +38,15 @@ def load() -> pd.DataFrame:
             if "error" in r:
                 continue
             base = {k: r[k] for k in ("seed", "src", "tgt", "method", "frac", "pr_auc", "roc_auc")}
+            h = r.get("hold") or {}
+            base.update(hold_n_pos=h.get("n_pos", np.nan),
+                        hold_f1=np.nan if h.get("f1_opt") is None else h["f1_opt"],
+                        hold_pr_auc=np.nan if h.get("pr_auc") is None else h["pr_auc"])
             for pol, m in r["policies"].items():
                 rows.append({**base, "policy": pol, "f1": m["f1"],
                              "precision": m["precision"], "recall": m["recall"],
-                             "thr": m["thr"], "prior_est": m.get("prior_est", np.nan)})
+                             "thr": m["thr"], "prior_est": m.get("prior_est", np.nan),
+                             "f1_est": m.get("f1_est", np.nan)})
     return pd.DataFrame(rows)
 
 
@@ -86,6 +91,43 @@ def paired_test(df, a_methods, b_methods, policy, frac):
     p = stats.wilcoxon(d).pvalue if (d != 0).sum() >= 1 else np.nan
     return {"frac": frac, "mean_a": j.a.mean(), "mean_b": j.b.mean(),
             "diff": d.mean(), "wins_a": int((d > 0).sum()), "n": len(d), "p": p}
+
+
+CANDIDATES = SUPERVISED + TARGET_ONLY
+DEV_SEED = 42   # the selector rule was fixed after inspecting this seed only
+
+
+def selection(df: pd.DataFrame) -> pd.DataFrame:
+    """Budget-only model selection per (seed, pair, frac).
+
+    Every candidate is thresholded by budget_plugin.  A selector picks one
+    candidate using budget information only; we record the test F1 it gets.
+      plugin_est   argmax of the plug-in F1 estimate (hold-out Platt + pool)
+      hold_f1      argmax of the empirical best F1 on the hold-out labels
+      hold_pr_auc  argmax of hold-out PR-AUC
+    Fixed choices and the per-cell test oracle are reported alongside.
+    """
+    sub = df[(df.policy == HONEST) & df.method.isin(CANDIDATES) & (df.frac > 0)]
+    out = []
+    for (seed, s, t, f), g in sub.groupby(["seed", "src", "tgt", "frac"]):
+        g = g.set_index("method")
+        rec = {"seed": seed, "src": s, "tgt": t, "frac": f,
+               "n_pos": g.hold_n_pos.max(),
+               "oracle": g.f1.max(),
+               "always_tgt_lgbm": g.f1.get("tgt_lgbm", np.nan),
+               "always_pooled_lgbm": g.f1.get("pooled_lgbm", np.nan)}
+        for name, col in (("plugin_est", "f1_est"), ("hold_f1", "hold_f1"),
+                          ("hold_pr_auc", "hold_pr_auc")):
+            c = g[col].dropna()
+            rec[name] = g.f1[c.idxmax()] if len(c) else np.nan
+            if name == "plugin_est" and len(c):
+                rec["pick"] = c.idxmax()
+        out.append(rec)
+    return pd.DataFrame(out)
+
+
+SELECTORS = ("plugin_est", "hold_f1", "hold_pr_auc", "always_tgt_lgbm",
+             "always_pooled_lgbm", "oracle")
 
 
 def main():
@@ -160,6 +202,33 @@ def main():
         t11 = ctl.groupby(["method", "frac"]).f1.mean().unstack("frac")
         t11.to_csv(OUT / "t11_alignment_control.csv")
         md += ["## T11. Union vs v1 zero_fill alignment (seed 42)\n", t11.round(3).to_markdown(), "\n"]
+
+    # 7. budget-only model selection (development seed vs confirmation seeds)
+    sel = selection(df)
+    sel.to_csv(OUT / "t12_selection_cells.csv", index=False)
+    sel["split"] = np.where(sel.seed == DEV_SEED, "development", "confirmation")
+    cols = [c for c in SELECTORS if sel[c].notna().any()]
+    t12 = sel.groupby(["split", "frac"])[cols].mean()
+    t12.to_csv(OUT / "t12_selection.csv")
+    md += ["## T12. Budget-only model selection: test F1 of the selected model\n",
+           t12.round(3).to_markdown(), "\n"]
+    conf = sel[sel.split == "confirmation"]
+    if not conf.empty:
+        tests = []
+        for base in ("hold_f1", "always_tgt_lgbm", "always_pooled_lgbm"):
+            for f in sorted(conf.frac.unique()):
+                c = conf[conf.frac == f].groupby(["src", "tgt"])[["plugin_est", base]].mean().dropna()
+                d = c.plugin_est - c[base]
+                p = stats.wilcoxon(d).pvalue if (d != 0).any() else np.nan
+                tests.append({"vs": base, "frac": f, "diff": d.mean(),
+                              "wins": int((d > 0).sum()), "losses": int((d < 0).sum()), "p": p})
+        t13 = pd.DataFrame(tests)
+        t13.to_csv(OUT / "t13_selection_tests.csv", index=False)
+        md += ["## T13. plugin_est selector vs baselines (confirmation seeds, Wilcoxon over pairs)\n",
+               t13.round(4).to_markdown(index=False), "\n"]
+    est = df[(df.policy == HONEST) & df.method.isin(CANDIDATES) & (df.frac > 0)][["f1_est", "f1"]].dropna()
+    md += [f"Plug-in F1 estimate vs test F1: Pearson r = {est.corr().iloc[0, 1]:.3f}, "
+           f"mean abs error = {(est.f1_est - est.f1).abs().mean():.3f} (n = {len(est)})\n"]
 
     (OUT / "summary.md").write_text("\n".join(md), encoding="utf-8")
     print("\n".join(md))

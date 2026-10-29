@@ -47,7 +47,7 @@ sys.path.insert(0, str(ROOT))
 from src.models.transfer.adapter import TransferAdapter
 from src.models.transfer.encoder import FraudEncoder
 from src.evaluation.thresholds import (
-    label_free_policies, budget_policies, oracle_policy, _prf,
+    label_free_policies, budget_policies, oracle_policy, _prf, f1_opt_threshold,
 )
 from experiments.cross_domain.feature_aligner import make_aligner
 from experiments.transfer.config import ALL_PAIRS, DEEP_CONFIG, RF_CONFIG
@@ -146,9 +146,14 @@ def evaluate(scores: dict, src, tgt, frac, label_free: bool) -> dict:
         pol["fixed"] = {**_prf(y_te, s_te >= 0.5), "thr": 0.5}
     if frac > 0:
         _, hold = tgt["budgets"][frac]
-        pol.update(budget_policies(s_te, y_te, scores[f"hold_{frac}"],
-                                   tgt["y_tr"][hold], scores["pool"],
+        s_h, y_h = scores[f"hold_{frac}"], tgt["y_tr"][hold]
+        pol.update(budget_policies(s_te, y_te, s_h, y_h, scores["pool"],
                                    fallback=pol.get("src_val", pol["fixed"])["thr"]))
+        # hold-out evidence for budget-only model selection baselines
+        mixed = 0 < y_h.sum() < len(y_h)
+        row["hold"] = {"n": int(len(y_h)), "n_pos": int(y_h.sum()),
+                       "pr_auc": float(average_precision_score(y_h, s_h)) if mixed else None,
+                       "f1_opt": float(_prf(y_h, s_h >= f1_opt_threshold(y_h, s_h))["f1"]) if mixed else None}
     pol.update(oracle_policy(s_te, y_te, scores["val"], tgt["y_val"]))
     return row
 
