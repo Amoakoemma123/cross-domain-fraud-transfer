@@ -42,7 +42,14 @@ def load() -> pd.DataFrame:
             base.update(hold_n_pos=h.get("n_pos", np.nan),
                         hold_f1=np.nan if h.get("f1_opt") is None else h["f1_opt"],
                         hold_pr_auc=np.nan if h.get("pr_auc") is None else h["pr_auc"])
-            for pol, m in r["policies"].items():
+            pols = dict(r["policies"])
+            # Platt calibration on the hold-out fails when it holds no positive case or the scores
+            # rank it backwards; a deployment still needs a threshold, so fall back to the
+            # hold-out F1 threshold and record no estimate (dropping the run would bias the means up)
+            base["plugin_fallback"] = "budget_f1" in pols and HONEST not in pols
+            if base["plugin_fallback"]:
+                pols[HONEST] = {k: v for k, v in pols["budget_f1"].items() if k != "f1_est"}
+            for pol, m in pols.items():
                 rows.append({**base, "policy": pol, "f1": m["f1"],
                              "precision": m["precision"], "recall": m["recall"],
                              "thr": m["thr"], "prior_est": m.get("prior_est", np.nan),
