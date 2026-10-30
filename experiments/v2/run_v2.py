@@ -54,6 +54,8 @@ from experiments.transfer.config import ALL_PAIRS, DEEP_CONFIG, RF_CONFIG
 from experiments.v2.prepare_data import load_cached, DATASETS
 
 FRACS = (0.01, 0.05, 0.10, 0.20)
+RANDOM_DRAWS = False         # --random-budget: draw budget and pool without looking at labels
+BUDGET_REP = 0               # --budget-rep: index of an independent label-blind budget draw
 MAX_SRC_TRAIN = 100_000     # source rows for training
 MAX_SRC_VAL = 100_000       # source val rows (early stopping, calibration)
 MAX_TGT_UNLAB = 200_000     # unlabelled target rows (DA training, EM pool)
@@ -75,6 +77,13 @@ LGBM_PARAMS = dict(n_estimators=500, learning_rate=0.05, num_leaves=63,
 
 # ── sampling ──────────────────────────────────────────────────────────────────
 
+def random_idx(n_rows: int, n: int, seed: int) -> np.ndarray:
+    """Label-blind sample of n row indices (all rows if n >= n_rows)."""
+    if n >= n_rows:
+        return np.arange(n_rows)
+    return np.sort(np.random.default_rng(seed).choice(n_rows, n, replace=False))
+
+
 def strat_idx(y: np.ndarray, n: int, seed: int) -> np.ndarray:
     """Stratified sample of n row indices (all rows if n >= len)."""
     if n >= len(y):
@@ -87,8 +96,8 @@ def strat_idx(y: np.ndarray, n: int, seed: int) -> np.ndarray:
 def budget_split(y_tr: np.ndarray, frac: float, seed: int):
     """Budget rows from target train, split 70/30 into fit / hold-out."""
     n = max(4, int(round(frac * len(y_tr))))
-    bseed = seed * 1000 + int(round(frac * 1000))
-    idx = strat_idx(y_tr, n, bseed)
+    bseed = seed * 1000 + int(round(frac * 1000)) + 7919 * BUDGET_REP
+    idx = random_idx(len(y_tr), n, bseed) if RANDOM_DRAWS else strat_idx(y_tr, n, bseed)
     yb = y_tr[idx]
     strat = yb if np.bincount(yb, minlength=2).min() >= 2 else None
     fit, hold = train_test_split(idx, test_size=0.30, stratify=strat,
@@ -109,7 +118,8 @@ class Data:
             z["y_te"] = z["y_te"].astype(np.int64)
             z["src_idx"] = strat_idx(z["y_tr"], MAX_SRC_TRAIN, seed)
             z["srcval_idx"] = strat_idx(z["y_val"], MAX_SRC_VAL, seed)
-            z["pool_idx"] = strat_idx(z["y_tr"], MAX_TGT_UNLAB, seed + 1)
+            z["pool_idx"] = (random_idx(len(z["y_tr"]), MAX_TGT_UNLAB, seed + 1) if RANDOM_DRAWS
+                             else strat_idx(z["y_tr"], MAX_TGT_UNLAB, seed + 1))
             z["prior"] = float(z["y_tr"].mean())
             z["budgets"] = {f: budget_split(z["y_tr"], f, seed) for f in FRACS}
             self.d[ds] = z
@@ -301,9 +311,10 @@ def run_tgt_only(method, t_id, data, seed):
 
 def main(seed: int, methods: list[str], pairs: list[tuple]):
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    sdir = SCORE_DIR / f"seed{seed}"
+    tag = (f"_randbudget_r{BUDGET_REP}" if RANDOM_DRAWS else "")
+    sdir = SCORE_DIR / f"seed{seed}{tag}"
     sdir.mkdir(parents=True, exist_ok=True)
-    res_file = OUT_DIR / f"results_seed{seed}.json"
+    res_file = OUT_DIR / f"results_seed{seed}{tag}.json"
     results = json.load(open(res_file)) if res_file.exists() else []
     done = {(r["src"], r["tgt"], r["method"], r["frac"]) for r in results}
 
@@ -337,8 +348,13 @@ def main(seed: int, methods: list[str], pairs: list[tuple]):
             for t_id in sorted({t for _, t in pairs}):
                 if all(("none", t_id, method, f) in done for f in FRACS):
                     continue
-                for f, row, s_te in run_tgt_only(method, t_id, data, seed):
-                    emit("none", t_id, method, f, row, s_te)
+                try:
+                    for f, row, s_te in run_tgt_only(method, t_id, data, seed):
+                        emit("none", t_id, method, f, row, s_te)
+                except Exception as e:  # e.g. no fraud case in the fit part of a label-blind budget
+                    print(f"    ERROR none->{t_id} [{method}]: {e!r}", flush=True)
+                    results.append({"seed": seed, "src": "none", "tgt": t_id,
+                                    "method": method, "frac": -1, "error": repr(e)})
                 save()
             continue
         for s_id, t_id in pairs:
@@ -370,7 +386,16 @@ if __name__ == "__main__":
     ap.add_argument("--methods", nargs="+", default=None)
     ap.add_argument("--v1-controls", action="store_true")
     ap.add_argument("--src"); ap.add_argument("--tgt")
+    ap.add_argument("--fracs", nargs="+", type=float, default=None)
+    ap.add_argument("--random-budget", action="store_true",
+                    help="draw budget and unlabelled pool label-blind; writes results_seed<s>_randbudget_r<k>.json")
+    ap.add_argument("--budget-rep", type=int, default=0)
     a = ap.parse_args()
+    if a.fracs:
+        FRACS = tuple(a.fracs)
+    RANDOM_DRAWS = a.random_budget
+    BUDGET_REP = a.budget_rep
     methods = a.methods or list(TGT_ONLY + UNSUP + SUP) + (list(V1_CONTROLS) if a.v1_controls else [])
-    pairs = [(a.src, a.tgt)] if a.src else ALL_PAIRS
+    pairs = ([(a.src, a.tgt)] if a.src else
+             [(s, t) for s, t in ALL_PAIRS if t == a.tgt] if a.tgt else ALL_PAIRS)
     main(a.seed, methods, pairs)
