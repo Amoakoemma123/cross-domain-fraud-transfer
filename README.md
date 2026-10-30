@@ -1,4 +1,4 @@
-# Calibration Is All You Need: Threshold Tuning as the Highest-Leverage Intervention for Cross-Domain Financial Fraud Transfer
+# Is Transfer Worth Its Labels? A Label-Budget-Honest Evaluation of Transfer Learning, Decision Threshold Calibration and Performance Estimation for Cross-Institution Financial Fraud Detection
 
 **Emmanuel Kwame Amoako**<sup>a*</sup>, Mahamudu Amadu<sup>b</sup>, James Quayson<sup>b</sup>, Kingsford Donkor<sup>c</sup>, Daniel Asamoah Apraku<sup>d</sup>
 
@@ -14,19 +14,34 @@ ORCID: [0009-0004-3477-6832](https://orcid.org/0009-0004-3477-6832)
 
 ## Overview
 
-This repository contains the full experimental pipeline for the paper *"Calibration Is All You Need: Threshold Tuning as the Highest-Leverage Intervention for Cross-Domain Financial Fraud Transfer"*, submitted to **Expert Systems with Applications**.
+This repository contains the code and results for a label-budget-honest benchmark of cross-institution fraud transfer. Every target label used for training, early stopping or threshold selection is charged to an explicit budget (1%, 5%, 10% or 20% of the target training partition). Methods that claim to use no target labels select models on source data only. The labelled target validation set is used only to report an oracle upper bound.
 
-Machine learning fraud detectors achieve strong in-domain performance but collapse under cross-domain distribution shift. We benchmark seven transfer-learning methods across four heterogeneous fraud datasets (12 directed pairs, 636 runs, 5-seed replication) and show that **decision-threshold calibration — a zero-cost post-hoc step — is the single highest-leverage intervention**, more than doubling supervised transfer F1 (0.130 → 0.292).
+Thirteen methods (label-free adaptation, supervised transfer and target-only baselines) are evaluated with eight threshold policies on all 12 directed pairs of four public fraud datasets, over 5 seeds. Seed 42 is the development seed; seeds 123, 456, 789 and 1024 are confirmation seeds.
 
-## Key Results
+## Key results (5 seeds)
 
 | Finding | Value |
 |---------|-------|
-| Zero-shot transfer F1 | 0.00–0.14 (all 12 pairs) |
-| Best unsupervised (DANN) | F1 0.110 ± 0.041 |
-| Best supervised fixed threshold | F1 0.130 (contrastive @ 1%) |
-| **Best calibrated** | **F1 0.292 (contrastive @ 10%)** |
-| Seed variance reduction | ±0.029 → ±0.013 |
+| Best label-free method, default threshold | F1 ≤ 0.10 |
+| Best transfer vs best target-only at 5% budget | F1 0.709 vs 0.714 (no budget significant) |
+| Budget plug-in F1 estimate: mean error | +0.009 (hold-out F1: +0.048) |
+| Choosing transfer vs target-only by the estimate | +0.009 F1, mostly from few-fraud cells |
+
+## Reproducing the v2 benchmark
+
+```bash
+python -m experiments.v2.prepare_data              # per-seed cached splits (dataset/processed/v2)
+python -m experiments.v2.run_v2 --seed 42          # repeat for 123 456 789 1024
+python -m experiments.v2.analyze_v2                # tables in experiments/v2/analysis/
+```
+
+- Results: `experiments/v2/results/results_seed*.json`
+- Threshold policies: `src/evaluation/thresholds.py`
+- Label-blind budget sensitivity run (ULB, 1%): `experiments/v2/queue_randbudget.ps1`, which uses `run_v2 --random-budget --budget-rep k`.
+
+## Earlier version (v1, superseded)
+
+The directories `experiments/{cross_domain,transfer,ablation,imbalance,cost_sensitive,interpretability}` and `run_experiment.py` hold the first version of this study ("Calibration Is All You Need"). **Its results should not be used.** That protocol tuned thresholds and early-stopped every deep method, including the "label-free" ones, on the full labelled target validation set. Its zero-fill alignment also dropped target-only features. The v2 benchmark above replaces it. The v1 description below is kept for reference.
 
 ## Datasets
 
@@ -112,9 +127,9 @@ python run_experiment.py --experiment visualise
 
 All experiments use fixed random seeds configured in `configs/experiments.yaml`. Result JSON files are included in this repository, enabling reproduction of all tables and figures without retraining.
 
-## Pre-computed Results
+## Pre-computed Results (v1, superseded)
 
-The `experiments/*/results/` directories contain all result JSONs and figures from the paper:
+The v1 result directories contain:
 
 - `transfer_results.json` — 636 transfer runs (seed 42)
 - `transfer_results_seed{123,456,789,1024}.json` — multi-seed replication
@@ -133,9 +148,9 @@ If you use this code or results, please cite:
 
 ```
 Amoako, E.K., Amadu, M., Quayson, J., Donkor, K., & Apraku, D.A. (2026).
-Calibration Is All You Need: Threshold Tuning as the Highest-Leverage
-Intervention for Cross-Domain Financial Fraud Transfer.
-Expert Systems with Applications (submitted).
+Is Transfer Worth Its Labels? A Label-Budget-Honest Evaluation of Transfer
+Learning, Decision Threshold Calibration and Performance Estimation for
+Cross-Institution Financial Fraud Detection. Manuscript under review.
 ```
 
 ## License
