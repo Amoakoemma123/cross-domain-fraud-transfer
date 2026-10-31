@@ -118,8 +118,12 @@ def selection(df: pd.DataFrame) -> pd.DataFrame:
       hold_f1      argmax of the empirical best F1 on the hold-out labels
       hold_pr_auc  argmax of hold-out PR-AUC
     Fixed choices and the per-cell test oracle are reported alongside.
+    Ties score the mean test F1 of the tied candidates (a random pick among
+    them); a cell where no candidate has a score falls back to tgt_lgbm, the
+    default a deployment would use.
     """
     sub = df[(df.policy == HONEST) & df.method.isin(CANDIDATES) & (df.frac > 0)]
+    recorded = {col: set(sub.loc[sub[col].notna(), "seed"]) for col in ("f1_est", "hold_f1", "hold_pr_auc")}
     out = []
     for (seed, s, t, f), g in sub.groupby(["seed", "src", "tgt", "frac"]):
         g = g.set_index("method")
@@ -131,9 +135,12 @@ def selection(df: pd.DataFrame) -> pd.DataFrame:
         for name, col in (("plugin_est", "f1_est"), ("hold_f1", "hold_f1"),
                           ("hold_pr_auc", "hold_pr_auc")):
             c = g[col].dropna()
-            rec[name] = g.f1[c.idxmax()] if len(c) else np.nan
-            if name == "plugin_est" and len(c):
-                rec["pick"] = c.idxmax()
+            if len(c):
+                rec[name] = g.f1[c[c >= c.max() - 1e-12].index].mean()
+            else:
+                rec[name] = rec["always_tgt_lgbm"] if seed in recorded[col] else np.nan
+            if name == "plugin_est":
+                rec["pick"] = c.idxmax() if len(c) else "tgt_lgbm"
         out.append(rec)
     return pd.DataFrame(out)
 
