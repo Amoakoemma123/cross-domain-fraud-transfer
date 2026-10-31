@@ -31,13 +31,18 @@ ORDER = LABEL_FREE + SUPERVISED + TARGET_ONLY + CONTROLS
 HONEST = "budget_plugin"   # primary deployable policy when labels exist
 
 
-def load() -> pd.DataFrame:
+def load(sensitivity: bool = False) -> pd.DataFrame:
+    """Main benchmark rows, or (sensitivity=True) the label-blind budget runs with a `rep` column."""
     rows = []
-    for f in sorted(RES_DIR.glob("results_seed*.json")):
+    files = sorted(RES_DIR.glob("results_seed*.json"))
+    files = [f for f in files if ("_randbudget" in f.stem) == sensitivity]
+    for f in files:
+        rep = int(f.stem.rsplit("_r", 1)[1]) if sensitivity else 0
         for r in json.load(open(f)):
             if "error" in r:
                 continue
             base = {k: r[k] for k in ("seed", "src", "tgt", "method", "frac", "pr_auc", "roc_auc")}
+            base["rep"] = rep
             h = r.get("hold") or {}
             base.update(hold_n_pos=h.get("n_pos", np.nan),
                         hold_f1=np.nan if h.get("f1_opt") is None else h["f1_opt"],
